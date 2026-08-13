@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+// Create a new node
+Node* makenode(int val, Node *next) {
+    Node *temp = (Node*)malloc(sizeof(Node));
+    temp->data = val;
+    temp->next = next;
+    return temp;
+}
+//inserthead
+Node* inserth(Node* n,int val)
+{
+    Node* temp=makenode(val,temp);
+    temp->next=n;
+    return temp;
+}
+//insort
+Node *insort(Node* l,int val)
+{
+    if(!l) return makenode(val,l);
+    if(l->data>=val)
+    {
+        Node*t=makenode(val,t);
+        t->next=l;
+        return t;
+    }
+    l->next=insort(l->next,val);
+    return l;
+}
+//insort// decreasing
+Node *insortd(Node* l,int val)
+{
+    if(!l) return makenode(val,l);
+    if(l->data<=val)
+    {
+        Node*t=makenode(val,t);
+        t->next=l;
+        return t;
+    }
+    l->next=insortd(l->next,val);
+    return l;
+}
+//delsort
+Node* delsort(Node* l,int val)
+{
+
+    if(!l) return l;
+    if(l->data>val) return l;
+    if(l->data==val) return l->next;
+    l->next=delsort(l->next,val);
+    return l;
+}
+
+void print(Node* n) {
+    while (n != NULL) {
+        printf("%d -> ", n->data);
+        n = n->next;
+    }
+    printf("NULL\n");
+}
+int main()
+{
+    Node* head=NULL;
+    head=insortd(head,20);
+    head=insortd(head,10);
+    head=insortd(head,50);
+    head=delsort(head,20);
+    print(head);
+    return 0;
+
+}
