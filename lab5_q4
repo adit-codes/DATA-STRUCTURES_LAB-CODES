@@ -1,0 +1,112 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+// Create a new node
+Node* makenode(int val, Node *next) {
+    Node *temp = (Node*)malloc(sizeof(Node));
+    temp->data = val;
+    temp->next = next;
+    return temp;
+}
+// Insert into circular linked list
+Node* insertcir(Node *l, int data) {
+    if (l == NULL) {
+        Node *t = makenode(data, NULL);
+        t->next = t;
+        return t;
+    }
+
+    Node *t = makenode(data, l->next);
+    l->next = t;
+    return l;
+}
+
+// Display circular linked list
+Node* display(Node *l)
+{
+
+    if(l)
+    {
+        Node *t=l;
+        printf("(%3d)",t->data);
+        while(t->next!=l)
+        {
+            t=t->next;
+            printf("(%3d)",t->data);
+        }
+    }
+}
+
+// Count nodes in circular linked list
+int countll(Node *l) {
+    if (l == NULL) return 0;
+    int count=1;
+    Node*t=l;
+    while(t->next!=l)
+    {
+
+        count++;
+        t=t->next;
+    }
+    return count;
+}
+//searching
+void searchval(Node* l,int val)
+{
+    if(l==NULL) {printf("\nEMPTY\n");return;}
+    Node*t=l;
+    while(t->next!=l)
+    {
+        if(t->next->data==val)
+        {
+            printf("(%3d)",t->data);
+            t=t->next;
+            printf("[(%3d)]",t->data);
+            t=t->next;
+            printf("(%3d)",t->data);
+            return;
+        }
+        t=t->next;
+    }
+    if(l->data==val){printf("(%3d)[(%3d)](%3d)",t->data,t->next->data,t->next->next->data);}
+}
+// reverse circular linked list
+Node* rev(Node* curr, Node* prev, Node* head) {
+    if (!curr) return NULL;
+
+    Node* next = curr->next;
+    curr->next = prev;
+    if (next == head) {
+        head->next = curr;
+        return curr;
+    }
+
+    return rev(next, curr, head);
+}
+Node* reversecir(Node* head) {
+    if (!head || head->next == head) return head;
+    return rev(head, NULL, head);
+}
+int main() {
+    Node* head = NULL;
+    Node* test=NULL;
+
+    head = insertcir(head, 10);
+    head = insertcir(head, 20);
+    head = insertcir(head, 30);
+    head = insertcir(head, 40);
+
+    display(head);
+    printf("\n");
+    printf("Total nodes: %d\n", countll(head));
+    searchval(head,20);
+    // Reversing the circular list
+    head = reversecir(head);
+    printf("\nREVERSE:\n");
+    display(head);
+    return 0;
+}
