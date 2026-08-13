@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+//Random Numbers into Odd and Even Stacks
+
+#define MAX 100
+
+typedef struct {
+    int data[MAX];
+    int top;
+} Stack;
+
+void init(Stack *s) {
+    s->top = -1;
+}
+
+int isFull(Stack *s) {
+    return s->top == MAX - 1;
+}
+
+int isEmpty(Stack *s) {
+    return s->top == -1;
+}
+
+void push(Stack *s, int val) {
+    if (isFull(s)) {
+        printf("Stack Overflow!\n");
+        return;
+    }
+    s->data[++(s->top)] = val;
+}
+
+int pop(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack Underflow!\n");
+        return -1;
+    }
+    return s->data[(s->top)--];
+}
+
+// Function to print a stack by value (copying the structure)
+void printStackByValue(Stack s, const char *stackName) {
+    printf("%s (Top to Bottom): ", stackName);
+    if (isEmpty(&s)) {
+        printf("Empty\n");
+        return;
+    }
+    while (!isEmpty(&s)) {
+        printf("%d ", pop(&s));
+    }
+    printf("\n");
+}
+
+int main() {
+    Stack stack1, stack2;
+    init(&stack1); // Odd numbers
+    init(&stack2); // Even numbers
+
+    int n, num;
+    srand(time(0)); // Seed for random generation
+
+    printf("Enter number of random integers (n): ");
+    scanf("%d", &n);
+
+    printf("Generated Numbers: ");
+    for (int i = 0; i < n; i++) {
+        num = rand() % 100 + 1; // Generates random numbers between 1 and 100
+        printf("%d ", num);
+        
+        if (num % 2 != 0) {
+            push(&stack1, num);
+        } else {
+            push(&stack2, num);
+        }
+    }
+    printf("\n\n");
+
+    // Pass structures by value to print without modifying originals
+    printStackByValue(stack1, "Stack 1 (Odd Numbers)");
+    printStackByValue(stack2, "Stack 2 (Even Numbers)");
+
+    return 0;
+}
