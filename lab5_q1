@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Node {
+    int exp;
+    int coeff;
+    struct Node* next;
+} Node;
+// Create a new node
+Node* makenode(int exp,int coeff, Node *next) {
+    Node *temp = (Node*)malloc(sizeof(Node));
+    temp->exp = exp;
+    temp->coeff = coeff;
+    temp->next = next;
+    return temp;
+}
+//insort// decreasing
+Node *insortd(Node* l,int val,int coeff)
+{
+    if(!l) return makenode(val,coeff,l);
+    if(l->exp<=val)
+    {
+        Node*t=makenode(val,coeff,t);
+        t->next=l;
+        return t;
+    }
+    l->next=insortd(l->next,val,coeff);
+    return l;
+}
+//insering element w/o duplication
+Node *insertTerm(Node *l,int exp,int coeff)
+{
+    if(!l) return makenode(exp,coeff,l);
+    Node *temp=l;
+    while(temp!=NULL)
+    {
+        if(temp->exp==exp){temp->coeff+=coeff;return l;}
+        temp=temp->next;
+    }
+    l=insortd(l,exp,coeff);
+    return l;
+}
+Node* multiscalar(Node *l,int scalar)
+{
+    if(!l) {printf("\nEMPTY\n");return l;}
+    Node *temp=l;
+    while(temp!=NULL)
+    {
+        temp->coeff*=scalar;
+        temp=temp->next;
+    }
+    return l;
+}
+Node* addpoly(Node *l1,Node*l2)
+{
+    if(!l1||!l2){printf("\nEMPTY\n");return NULL;}
+    Node *temp1=l1;
+    Node *temp2=l2;
+    Node *temp3=NULL;
+    while(temp1!=NULL&&temp2!=NULL)
+    {
+        if(temp1->exp==temp2->exp)
+        {
+            int c=temp1->coeff+temp2->coeff;
+            temp3=insortd(temp3,temp1->exp,c);
+            temp1=temp1->next;temp2=temp2->next;
+        }
+        else if(temp1->exp>temp2->exp)
+        {
+            temp3=insortd(temp3,temp1->exp,temp1->coeff);
+            temp1=temp1->next;
+        }
+        else {temp3=insortd(temp3,temp2->exp,temp2->coeff);temp2=temp2->next;}
+    }
+    while(temp1!=NULL)
+    {
+        temp3=insortd(temp3,temp1->exp,temp1->coeff);
+        temp1=temp1->next;
+    }
+    while(temp2!=NULL)
+    {
+        temp3=insortd(temp3,temp2->exp,temp2->coeff);
+        temp2=temp2->next;
+    }
+    return temp3;
+}
+void print(Node* n) {
+    while (n != NULL) {
+        printf("%dX^%d -> ", n->coeff,n->exp);
+        n = n->next;
+    }
+    printf("NULL\n");
+}
+int main()
+{
+
+    Node* head=NULL;Node *tail=NULL;Node* add=NULL;
+    head=insortd(head,2,20);
+    head=insortd(head,1,10);
+    head=insortd(head,5,30);
+    printf("\nhead:");
+    print(head);
+    //tail
+    tail=insortd(tail,2,100);
+    tail=insortd(tail,7,100);
+    tail=insortd(tail,5,100);
+    printf("\ntail:");
+    print(tail);
+    //head=insertTerm(head,5,70);
+    //head=insertTerm(head,1,70);
+    //printf("\n");
+    //print(head);
+    //head=multiscalar(head,100);
+    add=addpoly(head,tail);
+    printf("\nadd:");
+    print(add);
+    //printf("\n");
+    //print(head);
+    return 0;
+}
